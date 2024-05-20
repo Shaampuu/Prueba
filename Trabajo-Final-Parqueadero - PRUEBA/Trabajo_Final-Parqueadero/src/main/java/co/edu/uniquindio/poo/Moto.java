@@ -1,13 +1,18 @@
 package co.edu.uniquindio.poo;
 
 public class Moto extends Vehiculo {
-    
+
     private int velocidadMaxima;
     private TipoMoto tipoMoto;
-    
+
     public Moto(String placa, int modelo, Propietario propietario, int velocidadMaxima) {
         super(placa, modelo, propietario);
-        assert velocidadMaxima > 0 : "La velocidad máxima debe ser mayor a 0 (cero)";
+        Validaciones.validarPlaca(placa);
+        Validaciones.validarModelo(modelo);
+        Validaciones.validarPropietario(propietario);
+        if (velocidadMaxima <= 0) {
+            throw new IllegalArgumentException("La velocidad máxima debe ser mayor a 0 (cero)");
+        }
         this.velocidadMaxima = velocidadMaxima;
     }
 

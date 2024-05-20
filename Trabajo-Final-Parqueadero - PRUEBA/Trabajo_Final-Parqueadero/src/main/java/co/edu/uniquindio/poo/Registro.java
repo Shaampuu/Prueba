@@ -14,29 +14,33 @@ public class Registro {
         this.fechaSalida = fechaSalida;
     }
 
-    public Registro(Vehiculo vehiculo, LocalDateTime fechaEntrada) {
+    public Vehiculo getVehiculo() {
+        return vehiculo;
+    }
+
+    public void setVehiculo(Vehiculo vehiculo) {
         this.vehiculo = vehiculo;
     }
-    
+
     public LocalDateTime getFechaEntrada() {
         return fechaEntrada;
+    }
+
+    public void setFechaEntrada(LocalDateTime fechaEntrada) {
+        this.fechaEntrada = fechaEntrada;
     }
 
     public LocalDateTime getFechaSalida() {
         return fechaSalida;
     }
-    
+
     public void setFechaSalida(LocalDateTime fechaSalida) {
         this.fechaSalida = fechaSalida;
     }
 
     public double calcularCosto() {
-        assert fechaSalida != null : "El vehículo aún está estacionado, la fecha de salida es null.";
-    
-        // Calcular la duración del estacionamiento
-        Duration duracion = Duration.between(fechaEntrada, fechaSalida);
-    
-        // Calcular el número de horas estacionadas
+        LocalDateTime salida = fechaSalida != null ? fechaSalida : LocalDateTime.now();
+        Duration duracion = Duration.between(fechaEntrada, salida);
         long horasEstacionadas = duracion.toHours();
         if (duracion.toMinutes() % 60 != 0) {
             horasEstacionadas++;

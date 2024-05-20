@@ -7,9 +7,9 @@ public class Carro extends Vehiculo {
     public Carro(TipoCarro tipoCarro, String placa, int modelo, Propietario propietario) {
         super(placa, modelo, propietario);
         this.tipoCarro = tipoCarro;
-        validarPlaca(placa);
-        validarModelo(modelo);
-        validarPropietario(propietario);
+        Validaciones.validarPlaca(placa);
+        Validaciones.validarModelo(modelo);
+        Validaciones.validarPropietario(propietario);
     }
 
     public TipoCarro getTipoCarro() {
@@ -18,18 +18,6 @@ public class Carro extends Vehiculo {
 
     public void setTipoCarro(TipoCarro tipoCarro) {
         this.tipoCarro = tipoCarro;
-    }
-
-    private void validarPlaca(String placa) {
-        assert placa != null && !placa.isEmpty() : "La placa no puede ser nula o vacía";
-    }
-
-    private void validarModelo(int modelo) {
-        assert modelo > 0 : "El modelo debe ser un número positivo";
-    }
-
-    private void validarPropietario(Propietario propietario) {
-        assert propietario != null : "El propietario no puede ser nulo";
     }
 
     @Override

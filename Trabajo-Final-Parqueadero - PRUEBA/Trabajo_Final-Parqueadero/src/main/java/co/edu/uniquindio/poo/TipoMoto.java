@@ -1,16 +1,9 @@
 package co.edu.uniquindio.poo;
+
 public enum TipoMoto {
-    MOTO_CLASICA(TipoVehiculo.MOTO), 
-    MOTO_HIBRIDA(TipoVehiculo.MOTO);
-
-    private final TipoVehiculo tipoVehiculo;
-
-    private TipoMoto(TipoVehiculo tipoVehiculo) {
-        this.tipoVehiculo = tipoVehiculo;
-    }
+    BAJA_CILINDRADA, MEDIA_CILINDRADA, ALTA_CILINDRADA;
 
     public TipoVehiculo getTipoVehiculo() {
-        return tipoVehiculo;
+        return TipoVehiculo.MOTO;
     }
 }
-
