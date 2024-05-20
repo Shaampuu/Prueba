@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.Map;
 
-public class TestParqueadero {
+public class ParqueaderoTest {
 
     private Parqueadero parqueadero;
     private Propietario propietario1;
