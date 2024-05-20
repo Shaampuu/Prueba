@@ -1,66 +1,63 @@
 package co.edu.uniquindio.poo;
 
-import java.time.LocalTime;
 import java.time.Duration;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Registro {
-    private LocalTime horaEntrada;
-    private LocalTime horaSalida;
-    private double tarifaPorHora;
+    
     private Vehiculo vehiculo;
-    private LocalDate fecha;
+    private LocalDateTime fechaEntrada;
+    private LocalDateTime fechaSalida;
 
-    public Registro(LocalTime horaEntrada, LocalTime horaSalida, double tarifaPorHora, Vehiculo vehiculo){
-
-        this.horaEntrada = horaEntrada;
-        this.horaSalida = null;
-        this.tarifaPorHora = tarifaPorHora; 
+    public Registro(Vehiculo vehiculo, LocalDateTime fechaEntrada, LocalDateTime fechaSalida) {
         this.vehiculo = vehiculo;
-        this.fecha = LocalDate.now();
+        this.fechaEntrada = fechaEntrada;
+        this.fechaSalida = fechaSalida;
     }
 
-    public LocalTime getHoraEntrada(){
-        return horaEntrada;
+    public Registro(Vehiculo vehiculo, LocalDateTime fechaEntrada) {
+        this.vehiculo = vehiculo;
+        this.fechaEntrada = fechaEntrada;
+        this.fechaSalida= null;
+    }
+    
+    public LocalDateTime getFechaEntrada() {
+        return fechaEntrada;
     }
 
-    public void setHoraEntrada(LocalTime horaEntrada){
-        this.horaEntrada = horaEntrada;
+    public LocalDateTime getFechaSalida() {
+        return fechaSalida;
     }
+    
 
-    public LocalTime getHoraSalida(){
-        return horaSalida;
-    }
-
-    public void setHoraSalida(LocalTime horaSalida){
-        this.horaSalida = horaSalida;
-    }
-
-    public double getTarifaPorHora(){
-        return tarifaPorHora;
-    }
-
-    public void setTarifaPorHora(double tarifaPorHora){
-        this.tarifaPorHora = tarifaPorHora; 
-    }
-
-    public Vehiculo getVehiculo(){
+    public Vehiculo getVehiculo() {
         return vehiculo;
     }
-
-    public LocalDate getFecha(){
-        return fecha;
+    
+    public void setFechaSalida(LocalDateTime fechaSalida) {
+        this.fechaSalida = fechaSalida;
     }
 
-    public long calcularDuracionHoras(){
-        if (horaSalida == null){
-            return 0;
+    public double calcularCosto() {
+        assert fechaSalida != null : "El vehículo aún está estacionado, la fecha de salida es null.";
+    
+        // Calcular la duración del estacionamiento
+        Duration duracion = Duration.between(fechaEntrada, fechaSalida);
+    
+        // Calcular el número de horas estacionadas
+        long horasEstacionadas = duracion.toHours();
+    
+        // Si ha estacionado por menos de una hora, se cobra una hora completa
+        if (duracion.toMinutes() % 60 != 0) {
+            horasEstacionadas++;
         }
-        return Duration.between(horaEntrada, horaSalida).toHours();
+    
+        // Obtener la tarifa específica para este tipo de vehículo
+        double tarifaPorHora = vehiculo.getTarifaPorHora();
+    
+        // Calcular el costo total
+        return horasEstacionadas * tarifaPorHora;
     }
-
-    public double calcularCosto(){
-        long duracionHoras = calcularDuracionHoras();
-        return duracionHoras * tarifaPorHora;
-    }
+    
+    
 }
