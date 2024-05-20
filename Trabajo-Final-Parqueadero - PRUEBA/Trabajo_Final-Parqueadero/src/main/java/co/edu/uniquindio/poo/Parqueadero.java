@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.HashMap;
 
 public class Parqueadero {
-    private int cantidadPuestos;
+    private final int cantidadPuestos;
     private final Collection<Moto> motos;
     private final Collection<Carro> carros;
     private final Puesto[][] puestos;
@@ -42,21 +42,22 @@ public class Parqueadero {
         return !puestos[posicionI][posicionJ].estaOcupado();
     }
 
-    public void ocuparPuestos(int posicionI, int posicionJ, Vehiculo vehiculo, double tarifaPorHora) {
+    public void ocuparPuestos(int posicionI, int posicionJ, Vehiculo vehiculo) {
         if (verificarDisponibilidad(posicionI, posicionJ)) {
+            LocalDateTime fechaEntrada = LocalDateTime.now(); // Obtener la fecha y hora actual
             puestos[posicionI][posicionJ].ocuparPuesto(vehiculo);
-            Registro registro = new Registro(LocalTime.now(), null, tarifaPorHora, vehiculo);
+            Registro registro = new Registro(vehiculo, fechaEntrada, null); // Pasar fecha de entrada
             historialRegistros.add(registro);
         } else {
             System.out.println("El puesto ya está ocupado.");
         }
     }
 
-    public boolean buscarYParquearVehiculo(Vehiculo vehiculo, double tarifaPorHora) {
+    public boolean buscarYParquearVehiculo(Vehiculo vehiculo) {
         for (int posicionI = 0; posicionI < puestos.length; posicionI++) {
             for (int posicionJ = 0; posicionJ < puestos[0].length; posicionJ++) {
                 if (verificarDisponibilidad(posicionI, posicionJ)) {
-                    ocuparPuestos(posicionI, posicionJ, vehiculo, tarifaPorHora);
+                    ocuparPuestos(posicionI, posicionJ, vehiculo);
                     return true;
                 }
             }
@@ -69,22 +70,27 @@ public class Parqueadero {
         Puesto puesto = puestos[posicionI][posicionJ];
         if (puesto.estaOcupado()) {
             Vehiculo vehiculo = puesto.getVehiculo();
-            LocalDate fechaSalida = LocalDate.now();
-            double tarifaPorHora = 10.0; // Asumiendo una tarifa fija, esto podría depender del tipo de vehículo
-            double ingreso = calcularIngreso(vehiculo, fechaSalida, tarifaPorHora);
-
-            Registro registro = new Registro(vehiculo, fechaSalida, ingreso);
-            historialRegistros.add(registro);
-
-            puesto.liberarPuesto();
+            LocalDateTime fechaSalida = LocalDateTime.now();
+    
+            // Buscar el registro correspondiente en el historial de registros
+            Registro registro = null;
+            for (Registro reg : historialRegistros) {
+                if (reg.getVehiculo().equals(vehiculo) && reg.getFechaSalida() == null) {
+                    registro = reg;
+                    break;
+                }
+            }
+    
+            if (registro != null) {
+                registro.setFechaSalida(fechaSalida);
+                puesto.liberarPuesto();
+            } else {
+                System.err.println("No se encontró el registro correspondiente para el vehículo.");
+            }
         }
     }
     
-    private double calcularIngreso(Vehiculo vehiculo, LocalDate fechaSalida, double tarifaPorHora) {
-        // Implementar lógica para calcular el ingreso basado en el tiempo estacionado
-        return tarifaPorHora;
-    }
-
+    
     public String obtenerPropietario(int posicionI, int posicionJ) {
         if (puestos[posicionI][posicionJ].estaOcupado()) {
             return puestos[posicionI][posicionJ].getVehiculo().getPropietario().getNombre();
@@ -99,7 +105,7 @@ public class Parqueadero {
     }
 
     public Moto getMoto(String placa) {
-        Moto motoInteres = null; 
+        Moto motoInteres = null;
         for (Moto moto : motos) {
             if (moto.getPlaca().equals(placa)) {
                 motoInteres = moto;
@@ -120,80 +126,97 @@ public class Parqueadero {
     public Carro getCarro(String placa) {
         for (Carro carro : carros) {
             if (carro.getPlaca().equals(placa)) {
-                carroInteres = carro;
+                return carro;
             }
         }
-        return carroInteres;
+        return null;
     }
-
+    
     public Collection<Carro> getCarros() {
         return Collections.unmodifiableCollection(carros);
     }
-
+    
     private boolean validarPlacaMotoExiste(String placa) {
         for (Moto moto : motos) {
             if (moto.getPlaca().equals(placa)) {
-                existe = true;
+                return true;
             }
         }
-        return existe;
+        return false;
     }
-
+    
     private boolean validarPlacaCarroExiste(String placa) {
         for (Carro carro : carros) {
             if (carro.getPlaca().equals(placa)) {
-                existe = true;
+                return true;
             }
         }
-        return existe;
+        return false;
     }
-
+    
     public ArrayList<Registro> getHistorialRegistros() {
         return historialRegistros;
     }
-
-    public Map<TipoVehiculo, Double> generarRepoteDiario(LocalDate fecha) {
-        Map<TipoVehiculo, Double> reporteDiario = new HashMap<>();
-    
-        // Inicializar el mapa con valores por defecto
-        for (TipoVehiculo tipo : TipoVehiculo.values()) {
-            reporteDiario.put(tipo, 0.0);
-        }
+    public Map<TipoVehiculo, Double> generarReporteDiario(LocalDate fecha) {
+        Map<TipoVehiculo, Double> reporteDiario = inicializarReporte();
     
         for (Registro registro : historialRegistros) {
-            // Verificar si la fecha de entrada del registro coincide con la fecha dada
-            if (registro.getFechaEntrada().toLocalDate().equals(fecha)) {
+            if (esFechaIgual(registro, fecha)) {
                 actualizarReporte(registro, reporteDiario);
             }
         }
         return reporteDiario;
     }
     
-    // Método auxiliar para actualizar el reporte con la información del registro dado
+    public Map<TipoVehiculo, Double> generarReporteMensual(int mes, int año) {
+        Map<TipoVehiculo, Double> reporteMensual = inicializarReporte();
+    
+        for (Registro registro : historialRegistros) {
+            if (esMesYAñoIguales(registro, mes, año)) {
+                actualizarReporte(registro, reporteMensual);
+            }
+        }
+        return reporteMensual;
+    }
+    
+    private Map<TipoVehiculo, Double> inicializarReporte() {
+        Map<TipoVehiculo, Double> reporte = new HashMap<>();
+        for (TipoCarro tipoCarro : TipoCarro.values()) {
+            reporte.put(tipoCarro.getTipoVehiculo(), 0.0);
+        }
+        for (TipoMoto tipoMoto : TipoMoto.values()) {
+            reporte.put(tipoMoto.getTipoVehiculo(), 0.0);
+        }
+        return reporte;
+    }
+    
+    private boolean esFechaIgual(Registro registro, LocalDate fecha) {
+        return registro.getFechaEntrada().toLocalDate().equals(fecha);
+    }
+    
+    private boolean esMesYAñoIguales(Registro registro, int mes, int año) {
+        LocalDate fechaEntrada = registro.getFechaEntrada().toLocalDate();
+        return fechaEntrada.getMonthValue() == mes && fechaEntrada.getYear() == año;
+    }
+    
     private void actualizarReporte(Registro registro, Map<TipoVehiculo, Double> reporte) {
         double costo = registro.calcularCosto();
         Vehiculo vehiculo = registro.getVehiculo();
     
         if (vehiculo instanceof Moto) {
-            Moto moto = (Moto) vehiculo;
-            reporte.computeIfPresent(moto.getTipoVehiculo(), (tipo, acumulado) -> acumulado + costo);
+            reporte.compute(TipoVehiculo.MOTO, (tipo, acumulado) -> (acumulado == null) ? costo : acumulado + costo);
         } else if (vehiculo instanceof Carro) {
-            reporte.computeIfPresent(TipoVehiculo.CARRO, (tipo, acumulado) -> acumulado + costo);
-        }
-    }
-    public Map<TipoVehiculo, Double> generarReporteMensual(int mes, int anio) {
-        Map<TipoVehiculo, Double> reporte = new EnumMap<>(TipoVehiculo.class);
-        
-        for (Registro registro : historialRegistros) {
-            LocalDateTime fechaSalida = registro.getFechaSalida();
-            if (fechaSalida.getMonthValue() == mes && fechaSalida.getYear() == anio) {
-                TipoVehiculo tipoVehiculo = registro.getVehiculo().getTipoVehiculo();
-                double ingreso = registro.getIngreso();
-                reporte.put(tipoVehiculo, reporte.getOrDefault(tipoVehiculo, 0.0) + ingreso);
+            TipoCarro tipoCarro = ((Carro) vehiculo).getTipoCarro();
+            if (tipoCarro != null) {
+                reporte.compute(tipoCarro.getTipoVehiculo(), (tipo, acumulado) -> (acumulado == null) ? costo : acumulado + costo);
+            } else {
+                System.err.println("Tipo de vehículo desconocido: " + vehiculo.getClass().getSimpleName());
             }
+        } else {
+            System.err.println("Tipo de vehículo desconocido: " + vehiculo.getClass().getSimpleName());
         }
-        
-        return reporte;
     }
     
+        
+              
 }

@@ -1,11 +1,11 @@
 package co.edu.uniquindio.poo;
-
-public enum TipoCarro {
-    CARRO(TipoVehiculo.CARRO), CAMIONETA(TipoVehiculo.CARRO), DEPORTIVO(TipoVehiculo.CARRO), BUS(TipoVehiculo.CARRO);
+public enum TipoMoto {
+    MOTO_CLASICA(TipoVehiculo.MOTO), 
+    MOTO_HIBRIDA(TipoVehiculo.MOTO);
 
     private final TipoVehiculo tipoVehiculo;
 
-    private TipoCarro(TipoVehiculo tipoVehiculo) {
+    private TipoMoto(TipoVehiculo tipoVehiculo) {
         this.tipoVehiculo = tipoVehiculo;
     }
 
@@ -13,3 +13,4 @@ public enum TipoCarro {
         return tipoVehiculo;
     }
 }
+

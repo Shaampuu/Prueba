@@ -25,7 +25,7 @@ public class MotoTest {
     public void datosCompletos() {
         LOG.info("Iniciando test datosCompletos");
         var propietario = new Propietario("Veronica Martinez");
-        var moto = new Moto("KUK-44F", 2022, propietario, TipoVehiculo.MOTO_CLASICA, 120);
+        var moto = new Moto("KUK-44F", 2022, propietario, 120);
         LOG.info("Valor esperado: " + "Veronica Martinez");
         LOG.info("Valor real: " + moto.getPropietario().getNombre());
         assertEquals("Veronica Martinez", moto.getPropietario().getNombre());
@@ -35,7 +35,7 @@ public class MotoTest {
     @Test
     public void datosNulos(){
         LOG.info("Iniciando test datosNulos");
-        assertThrows(Throwable.class, () -> new Moto(null, (int) 0, null, null, (int) 0));
+        assertThrows(Throwable.class, () -> new Moto(null, (int) 0, null, (int) 0));
         LOG.info("Finalizando test datosNulos");
     }
 
@@ -43,7 +43,7 @@ public class MotoTest {
     public void datosVacios(){
         LOG.info("Iniciando test datosVacíos");
         var propietario = new Propietario("Veronica Martinez");
-        assertThrows(Throwable.class, () -> new Moto(" ", (int) 0, propietario, TipoVehiculo.MOTO_CLASICA, (int) 0));
+        assertThrows(Throwable.class, () -> new Moto(" ", (int) 0, propietario, (int) 0));
         LOG.info("Finalizando test datosVacíos");
     }
 
@@ -51,7 +51,7 @@ public class MotoTest {
     public void numeroNegativo(){
         LOG.info("Iniciando test númeroNegativo");
         var propietario = new Propietario("Veronica Martinez");
-        assertThrows(Throwable.class, () -> new Moto("TTA-98F", (int) -2023, propietario, TipoVehiculo.MOTO_CLASICA, (int) -130));
+        assertThrows(Throwable.class, () -> new Moto("TTA-98F", (int) -2023, propietario, (int) -130));
         TesteadorDeNumeroNegativo testeador = new TesteadorDeNumeroNegativo();
         assertThrows(Throwable.class, testeador);
         LOG.info("Finalizando test númeroNegativo");
@@ -61,7 +61,7 @@ public class MotoTest {
         @Override
         public void execute () throws Throwable {
             var propietario = new Propietario("Veronica Martinez");
-            new Moto("TTA-98F", (int) -2023, propietario, TipoVehiculo.MOTO_CLASICA, (int) -130);
+            new Moto("TTA-98F", (int) -2023, propietario, (int) -130);
         }
     }
     

@@ -3,9 +3,10 @@ package co.edu.uniquindio.poo;
 public class Carro extends Vehiculo {
 
     private TipoCarro tipoCarro;
-    public Carro( TipoCarro tipoCarro, String placa, int modelo, Propietario propietario, TipoVehiculo tipoVehiculo) {
-        super(placa, modelo, propietario, tipoVehiculo);
-        this.tipoCarro=tipoCarro;
+
+    public Carro(TipoCarro tipoCarro, String placa, int modelo, Propietario propietario) {
+        super(placa, modelo, propietario);
+        this.tipoCarro = tipoCarro;
         validarPlaca(placa);
         validarModelo(modelo);
         validarPropietario(propietario);
@@ -30,17 +31,18 @@ public class Carro extends Vehiculo {
     private void validarPropietario(Propietario propietario) {
         assert propietario != null : "El propietario no puede ser nulo";
     }
+
     @Override
     public double getTarifaPorHora() {
         switch (tipoCarro) {
             case CAMIONETA:
-                return 15.0; // Tarifa para una camioneta
+                return 15.0;
             case DEPORTIVO:
-                return 20.0; // Tarifa para un carro deportivo
+                return 20.0;
             case BUS:
-                return 30.0; // Tarifa para un autobús
+                return 30.0;
             default:
-                return 10.0; // Tarifa por defecto para otros tipos de carro
+                return 10.0;
         }
-}
+    }
 }
