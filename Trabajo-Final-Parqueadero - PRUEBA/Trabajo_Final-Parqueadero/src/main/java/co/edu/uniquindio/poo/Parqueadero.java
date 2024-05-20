@@ -1,6 +1,7 @@
 package co.edu.uniquindio.poo;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -157,46 +158,51 @@ public class Parqueadero {
 
     public Map<TipoVehiculo, Double> generarRepoteDiario(LocalDate fecha) {
         Map<TipoVehiculo, Double> reporteDiario = new HashMap<>();
-        reporteDiario.put(TipoVehiculo.MOTO_CLASICA, 0.0);
-        reporteDiario.put(TipoVehiculo.MOTO_HIBRIDA, 0.0);
-        reporteDiario.put(TipoVehiculo.CARRO, 0.0);
-
+    
+        // Inicializar el mapa con valores por defecto
+        for (TipoVehiculo tipo : TipoVehiculo.values()) {
+            reporteDiario.put(tipo, 0.0);
+        }
+    
         for (Registro registro : historialRegistros) {
-            if (registro.getFecha().equals(fecha)) {
-                double costo = registro.calcularCosto();
-                if (registro.getVehiculo() instanceof Moto) {
-                    Moto moto = (Moto) registro.getVehiculo();
-                    reporteDiario.put(moto.getTipoVehiculo(), reporteDiario.get(moto.getTipoVehiculo()) + costo);
-                } else if (registro.getVehiculo() instanceof Carro) {
-                    reporteDiario.put(TipoVehiculo.CARRO, reporteDiario.get(TipoVehiculo.CARRO) + costo);
-                }
+            // Verificar si la fecha de entrada del registro coincide con la fecha dada
+            if (registro.getFechaEntrada().toLocalDate().equals(fecha)) {
+                actualizarReporte(registro, reporteDiario);
             }
         }
         return reporteDiario;
     }
-
-    /*
-     * public Map<TipoVehiculo, Double> generarReporteDiario(LocalDate fecha) {
-        Map<TipoVehiculo, Double> reporte = new EnumMap<>(TipoVehiculo.class);
-        for (Registro registro : historialRegistros) {
-            if (registro.getFechaSalida().equals(fecha)) {
-                reporte.put(registro.getVehiculo().getTipoVehiculo(),
-                        reporte.getOrDefault(registro.getVehiculo().getTipoVehiculo(), 0.0) + registro.getIngreso());
-            }
+    
+    // Método auxiliar para actualizar el reporte con la información del registro dado
+    private void actualizarReporte(Registro registro, Map<TipoVehiculo, Double> reporte) {
+        double costo = registro.calcularCosto();
+        Vehiculo vehiculo = registro.getVehiculo();
+    
+        if (vehiculo instanceof Moto) {
+            Moto moto = (Moto) vehiculo;
+            reporte.computeIfPresent(moto.getTipoVehiculo(), (tipo, acumulado) -> acumulado + costo);
+        } else if (vehiculo instanceof Carro) {
+            reporte.computeIfPresent(TipoVehiculo.CARRO, (tipo, acumulado) -> acumulado + costo);
         }
-        return reporte;
     }
-     */
+    
+    
 
     public Map<TipoVehiculo, Double> generarReporteMensual(int mes, int anio) {
         Map<TipoVehiculo, Double> reporte = new EnumMap<>(TipoVehiculo.class);
+        
         for (Registro registro : historialRegistros) {
-            LocalDate fechaSalida = registro.getFechaSalida();
+            LocalDateTime fechaSalida = registro.getFechaSalida();
             if (fechaSalida.getMonthValue() == mes && fechaSalida.getYear() == anio) {
-                reporte.put(registro.getVehiculo().getTipoVehiculo(),
-                        reporte.getOrDefault(registro.getVehiculo().getTipoVehiculo(), 0.0) + registro.getIngreso());
+                TipoVehiculo tipoVehiculo = registro.getVehiculo().getTipoVehiculo();
+                double ingreso = registro.getIngreso();
+                reporte.put(tipoVehiculo, reporte.getOrDefault(tipoVehiculo, 0.0) + ingreso);
             }
         }
+        
         return reporte;
     }
+    
+
 }
+

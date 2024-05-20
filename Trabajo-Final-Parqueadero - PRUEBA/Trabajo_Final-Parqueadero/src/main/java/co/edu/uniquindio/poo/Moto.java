@@ -17,4 +17,16 @@ public class Moto extends Vehiculo{
     public void setVelocidadMaxima(int velocidadMaxima){
         this.velocidadMaxima=velocidadMaxima;
     }
+
+    @Override
+    public double getTarifaPorHora() {
+        // Definir la tarifa por hora según la velocidad máxima de la moto
+        if (velocidadMaxima >= 0 && velocidadMaxima <= 100) {
+            return 5.0; // Tarifa para motos con velocidad máxima menor o igual a 100 km/h
+        } else if (velocidadMaxima > 100 && velocidadMaxima <= 150) {
+            return 7.0; // Tarifa para motos con velocidad máxima entre 101 y 150 km/h
+        } else {
+            return 10.0; // Tarifa por defecto para otras velocidades máximas
+        }
+    }
 }
