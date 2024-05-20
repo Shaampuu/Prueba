@@ -8,13 +8,11 @@ public class Registro {
     private Vehiculo vehiculo;
     private LocalDateTime fechaEntrada;
     private LocalDateTime fechaSalida;
-    private double tarifaPorHora;
 
     public Registro(Vehiculo vehiculo, LocalDateTime fechaEntrada, LocalDateTime fechaSalida, double tarifaPorHora) {
         this.vehiculo = vehiculo;
         this.fechaEntrada = fechaEntrada;
         this.fechaSalida = fechaSalida;
-        this.tarifaPorHora = tarifaPorHora;
     }
     
 
@@ -31,9 +29,6 @@ public class Registro {
         return vehiculo;
     }
 
-    public double getTarifaPorHora() {
-        return tarifaPorHora;
-    }
 
     public double calcularCosto() {
         // Calcular la duración del estacionamiento

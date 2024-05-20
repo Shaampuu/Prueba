@@ -2,7 +2,6 @@ package co.edu.uniquindio.poo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -119,7 +118,6 @@ public class Parqueadero {
     }
 
     public Carro getCarro(String placa) {
-        Carro carroInteres = null; 
         for (Carro carro : carros) {
             if (carro.getPlaca().equals(placa)) {
                 carroInteres = carro;
@@ -133,7 +131,6 @@ public class Parqueadero {
     }
 
     private boolean validarPlacaMotoExiste(String placa) {
-        boolean existe = false; 
         for (Moto moto : motos) {
             if (moto.getPlaca().equals(placa)) {
                 existe = true;
@@ -143,7 +140,6 @@ public class Parqueadero {
     }
 
     private boolean validarPlacaCarroExiste(String placa) {
-        boolean existe = false; 
         for (Carro carro : carros) {
             if (carro.getPlaca().equals(placa)) {
                 existe = true;
@@ -185,9 +181,6 @@ public class Parqueadero {
             reporte.computeIfPresent(TipoVehiculo.CARRO, (tipo, acumulado) -> acumulado + costo);
         }
     }
-    
-    
-
     public Map<TipoVehiculo, Double> generarReporteMensual(int mes, int anio) {
         Map<TipoVehiculo, Double> reporte = new EnumMap<>(TipoVehiculo.class);
         
@@ -203,6 +196,4 @@ public class Parqueadero {
         return reporte;
     }
     
-
 }
-

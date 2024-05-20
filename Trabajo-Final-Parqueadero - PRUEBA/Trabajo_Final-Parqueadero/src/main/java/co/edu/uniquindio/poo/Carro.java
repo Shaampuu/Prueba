@@ -11,7 +11,6 @@ public class Carro extends Vehiculo {
         validarPropietario(propietario);
     }
 
-    
     public TipoCarro getTipoCarro() {
         return tipoCarro;
     }
@@ -33,7 +32,6 @@ public class Carro extends Vehiculo {
     }
     @Override
     public double getTarifaPorHora() {
-        // Definir la tarifa por hora según el tipo de carro
         switch (tipoCarro) {
             case CAMIONETA:
                 return 15.0; // Tarifa para una camioneta

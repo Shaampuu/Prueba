@@ -4,7 +4,6 @@ public abstract class Vehiculo {
     private String placa; 
     private int modelo;
     private Propietario propietario;
-    private TipoVehiculo tipoVehiculo;
 
     public Vehiculo (String placa, int modelo, Propietario propietario, TipoVehiculo tipoVehiculo){
         assert placa != null && !placa.isBlank() : "La placa debe ser diferente de null";
@@ -14,7 +13,6 @@ public abstract class Vehiculo {
         this.placa=placa;
         this.modelo=modelo;
         this.propietario = propietario;
-        this.tipoVehiculo=tipoVehiculo; 
     }
 
     public String getPlaca(){
