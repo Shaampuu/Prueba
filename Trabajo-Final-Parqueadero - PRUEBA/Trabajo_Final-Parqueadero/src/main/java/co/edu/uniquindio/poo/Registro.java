@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Registro {
-    
     private Vehiculo vehiculo;
     private LocalDateTime fechaEntrada;
     private LocalDateTime fechaSalida;
@@ -17,8 +16,6 @@ public class Registro {
 
     public Registro(Vehiculo vehiculo, LocalDateTime fechaEntrada) {
         this.vehiculo = vehiculo;
-        this.fechaEntrada = fechaEntrada;
-        this.fechaSalida= null;
     }
     
     public LocalDateTime getFechaEntrada() {
@@ -27,11 +24,6 @@ public class Registro {
 
     public LocalDateTime getFechaSalida() {
         return fechaSalida;
-    }
-    
-
-    public Vehiculo getVehiculo() {
-        return vehiculo;
     }
     
     public void setFechaSalida(LocalDateTime fechaSalida) {
@@ -46,18 +38,10 @@ public class Registro {
     
         // Calcular el número de horas estacionadas
         long horasEstacionadas = duracion.toHours();
-    
-        // Si ha estacionado por menos de una hora, se cobra una hora completa
         if (duracion.toMinutes() % 60 != 0) {
             horasEstacionadas++;
         }
-    
-        // Obtener la tarifa específica para este tipo de vehículo
         double tarifaPorHora = vehiculo.getTarifaPorHora();
-    
-        // Calcular el costo total
         return horasEstacionadas * tarifaPorHora;
     }
-    
-    
 }

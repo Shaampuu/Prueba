@@ -105,7 +105,6 @@ public class Parqueadero {
     }
 
     public Moto getMoto(String placa) {
-        Moto motoInteres = null;
         for (Moto moto : motos) {
             if (moto.getPlaca().equals(placa)) {
                 motoInteres = moto;
