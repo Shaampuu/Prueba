@@ -9,6 +9,8 @@ public class Registro {
     private LocalDateTime fechaSalida;
 
     public Registro(Vehiculo vehiculo, LocalDateTime fechaEntrada, LocalDateTime fechaSalida) {
+        assert vehiculo != null : "El vehículo no puede ser nulo";
+        assert fechaEntrada != null : "La fecha de entrada no puede ser nula";
         this.vehiculo = vehiculo;
         this.fechaEntrada = fechaEntrada;
         this.fechaSalida = fechaSalida;

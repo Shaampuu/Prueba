@@ -12,6 +12,11 @@ public class Carro extends Vehiculo {
         Validaciones.validarPropietario(propietario);
     }
 
+    public Carro(String placa, int modelo, Propietario propietario, TipoCarro tipoCarro) {
+        super(placa, modelo, propietario);
+        this.tipoCarro = tipoCarro;
+    }
+
     public TipoCarro getTipoCarro() {
         return tipoCarro;
     }
