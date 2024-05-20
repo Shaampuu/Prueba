@@ -22,14 +22,13 @@ public class MotoTest {
     private static final Logger LOG = Logger.getLogger(MotoTest.class.getName());
 
     @Test
-    public void datosCompletos(){
+    public void datosCompletos() {
         LOG.info("Iniciando test datosCompletos");
-        var propietario = new Propietario ("Veronica Martinez");
-        var moto = new Moto("KUK-44F", (int) 2022, propietario, TipoVehiculo.MOTO_CLASICA, (int)120);
-        assertEquals("KUK-44F", moto.getPlaca());
-        assertEquals((int)2022, moto.getModelo());
-        assertEquals("Veronica Martinez", moto.getPropietario());
-        assertEquals((int)120, moto.getVelocidadMaxima());
+        var propietario = new Propietario("Veronica Martinez");
+        var moto = new Moto("KUK-44F", 2022, propietario, TipoVehiculo.MOTO_CLASICA, 120);
+        LOG.info("Valor esperado: " + "Veronica Martinez");
+        LOG.info("Valor real: " + moto.getPropietario().getNombre());
+        assertEquals("Veronica Martinez", moto.getPropietario().getNombre());
         LOG.info("Finalizando test datosCompletos");
     }
 

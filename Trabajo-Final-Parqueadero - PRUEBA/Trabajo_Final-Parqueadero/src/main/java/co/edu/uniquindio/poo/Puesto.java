@@ -5,9 +5,9 @@ public class Puesto {
     private int posicionJ;
     private Vehiculo vehiculo;
 
-    public Puesto(int posicionI, int posicionJ, Vehiculo vehiculo, boolean disponibles, int columnas, int filas){
-        assert posicionI > 0 && posicionI <= columnas : "PosiciónI debe ser mayor a cero o esta por fuera de los limites";
-        assert posicionJ > 0 && posicionJ <= filas : "PosiciónJ debe ser mayor a cero o esta por fuera de los limites";
+    public Puesto(int posicionI, int posicionJ, Vehiculo vehiculo, int columnas, int filas){
+        assert posicionI >= 0 && posicionI < columnas : "PosiciónI debe estar dentro de los límites (0 a columnas-1)";
+        assert posicionJ >= 0 && posicionJ < filas : "PosiciónJ debe estar dentro de los límites (0 a filas-1)";
 
         this.posicionI = posicionI;
         this.posicionJ = posicionJ;

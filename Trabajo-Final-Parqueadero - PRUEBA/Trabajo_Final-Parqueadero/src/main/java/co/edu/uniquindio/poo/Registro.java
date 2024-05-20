@@ -1,66 +1,60 @@
 package co.edu.uniquindio.poo;
 
-import java.time.LocalTime;
-import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class Registro {
     private LocalTime horaEntrada;
     private LocalTime horaSalida;
     private double tarifaPorHora;
     private Vehiculo vehiculo;
-    private LocalDate fecha;
 
-    public Registro(LocalTime horaEntrada, LocalTime horaSalida, double tarifaPorHora, Vehiculo vehiculo){
-
+    public Registro(LocalTime horaEntrada, LocalTime horaSalida, double tarifaPorHora, Vehiculo vehiculo) {
         this.horaEntrada = horaEntrada;
-        this.horaSalida = null;
-        this.tarifaPorHora = tarifaPorHora; 
+        this.horaSalida = horaSalida;
+        this.tarifaPorHora = tarifaPorHora;
         this.vehiculo = vehiculo;
-        this.fecha = LocalDate.now();
     }
 
-    public LocalTime getHoraEntrada(){
+    public LocalTime getHoraEntrada() {
         return horaEntrada;
     }
 
-    public void setHoraEntrada(LocalTime horaEntrada){
+    public void setHoraEntrada(LocalTime horaEntrada) {
         this.horaEntrada = horaEntrada;
     }
 
-    public LocalTime getHoraSalida(){
+    public LocalTime getHoraSalida() {
         return horaSalida;
     }
 
-    public void setHoraSalida(LocalTime horaSalida){
+    public void setHoraSalida(LocalTime horaSalida) {
         this.horaSalida = horaSalida;
     }
 
-    public double getTarifaPorHora(){
+    public double getTarifaPorHora() {
         return tarifaPorHora;
     }
 
-    public void setTarifaPorHora(double tarifaPorHora){
-        this.tarifaPorHora = tarifaPorHora; 
+    public void setTarifaPorHora(double tarifaPorHora) {
+        this.tarifaPorHora = tarifaPorHora;
     }
 
-    public Vehiculo getVehiculo(){
+    public Vehiculo getVehiculo() {
         return vehiculo;
     }
 
-    public LocalDate getFecha(){
-        return fecha;
+    public void setVehiculo(Vehiculo vehiculo) {
+        this.vehiculo = vehiculo;
     }
 
-    public long calcularDuracionHoras(){
-        if (horaSalida == null){
+    public double calcularCosto() {
+        if (horaSalida != null) {
+            long horasEstacionado = horaEntrada.until(horaSalida).toHours();
+            return horasEstacionado * tarifaPorHora;
+        } else {
+            // Si el vehículo aún está estacionado, no se puede calcular el costo
             return 0;
         }
-        return Duration.between(horaEntrada, horaSalida).toHours();
-    }
-
-    public double calcularCosto(){
-        long duracionHoras = calcularDuracionHoras();
-        return duracionHoras * tarifaPorHora;
     }
 }
