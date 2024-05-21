@@ -107,7 +107,7 @@ public class AppController {
                         tipoCarro = TipoCarro.BUS;
                         break;
                     default:
-                        System.out.println("Opción inválida. Se asignará el tipo por defecto.");
+                        iniciar();
                 }
     
                 vehiculo = new Carro(tipoCarro, placa, modelo, propietario);
@@ -128,8 +128,10 @@ public class AppController {
                 System.out.println("-----------------/////////---------------");
                 System.out.println("Vehículo registrado exitosamente.");
                 System.out.println("-----------------/////////---------------");
+                iniciar();
             } else {
                 System.out.println("No hay puestos disponibles. No se pudo registrar el vehículo.");
+                iniciar();
             }
         }
         scanner.close();
@@ -151,8 +153,10 @@ public class AppController {
         if (vehiculo != null) {
             parqueadero.registrarSalidaVehiculo(vehiculo);
             System.out.println("Vehículo retirado exitosamente.");
+            iniciar();
         } else {
             System.out.println("No se encontró ningún vehículo con la placa especificada.");
+            iniciar();
         }
         scanner.close();
     }
@@ -167,6 +171,7 @@ public class AppController {
         for (Map.Entry<TipoVehiculo, Double> entry : reporteDiario.entrySet()) {
             System.out.println(entry.getKey() + ": $" + entry.getValue());
         }
+        iniciar();
     }
 
     private void imprimirReporteMensual() {
@@ -185,7 +190,7 @@ public class AppController {
         for (Map.Entry<TipoVehiculo, Double> entry : reporteMensual.entrySet()) {
             System.out.println(entry.getKey() + ": $" + entry.getValue());
         }
-
+        iniciar();
         scanner.close();
     }
 
