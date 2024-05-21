@@ -59,7 +59,7 @@ public class AppController {
 
     private void registrarEntradaVehiculo() {
         Scanner scanner = new Scanner(System.in);
-
+    
         // Solicitar datos del vehículo al usuario
         System.out.println("----------------------------------------------");
         System.out.println("Ingrese los datos del vehículo:");
@@ -67,14 +67,14 @@ public class AppController {
         String placa = scanner.nextLine();
         System.out.print(" (número) Modelo: ");
         int modelo = scanner.nextInt();
-        scanner.nextLine(); // Limpiar el buffer del scanner
+        scanner.nextLine(); // Consumir el salto de línea
         System.out.print("Nombre del propietario: ");
         String nombrePropietario = scanner.nextLine();
         System.out.println("----------------------------------------------");
-
+    
         // Crear objeto Propietario
         Propietario propietario = new Propietario(nombrePropietario);
-
+    
         // Crear objeto Vehiculo
         Vehiculo vehiculo = null;
         System.out.println("Seleccione el tipo de vehículo:");
@@ -83,8 +83,8 @@ public class AppController {
         System.out.print("Opción: ");
         int opcionTipoVehiculo = scanner.nextInt();
         System.out.println("----------------------------------------------");
-        scanner.nextLine(); // Limpiar el buffer del scanner
-
+        scanner.nextLine(); // Consumir el salto de línea
+    
         switch (opcionTipoVehiculo) {
             case 1:
                 System.out.println("Seleccione el tipo de carro:");
@@ -93,8 +93,8 @@ public class AppController {
                 System.out.println("3. Bus");
                 System.out.print("Opción: ");
                 int opcionTipoCarro = scanner.nextInt();
-                scanner.nextLine(); // Limpiar el buffer del scanner
-
+                scanner.nextLine(); // Consumir el salto de línea
+    
                 TipoCarro tipoCarro = null;
                 switch (opcionTipoCarro) {
                     case 1:
@@ -109,7 +109,7 @@ public class AppController {
                     default:
                         System.out.println("Opción inválida. Se asignará el tipo por defecto.");
                 }
-
+    
                 vehiculo = new Carro(tipoCarro, placa, modelo, propietario);
                 break;
             case 2:
@@ -121,7 +121,7 @@ public class AppController {
             default:
                 System.out.println("Opción inválida. No se registrará el vehículo.");
         }
-
+    
         // Registrar la entrada del vehículo en el parqueadero
         if (vehiculo != null) {
             if (parqueadero.buscarYParquearVehiculo(vehiculo)) {
@@ -134,6 +134,7 @@ public class AppController {
         }
         scanner.close();
     }
+    
 
     private void registrarSalidaVehiculo() {
         Scanner scanner = new Scanner(System.in);
