@@ -3,66 +3,75 @@ package co.edu.uniquindio.poo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.logging.Logger;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
-/**
- * Clase para probar el funcionamiento del código
- * @author Área de programación UQ
- * @since 2023-08
- * 
- * Licencia GNU/GPL V3.0 (https://raw.githubusercontent.com/grid-uq/poo/main/LICENSE) 
- */
 
-/**
- * Unit test for simple App.
- */
-public class MotoTest {
-    private static final Logger LOG = Logger.getLogger(MotoTest.class.getName());
+class MotoTest {
 
-    @Test
-    public void datosCompletos() {
-        LOG.info("Iniciando test datosCompletos");
-        var propietario = new Propietario("Veronica Martinez");
-        var moto = new Moto("KUK-44F", 2022, propietario, 120);
-        LOG.info("Valor esperado: " + "Veronica Martinez");
-        LOG.info("Valor real: " + moto.getPropietario().getNombre());
-        assertEquals("Veronica Martinez", moto.getPropietario().getNombre());
-        LOG.info("Finalizando test datosCompletos");
+    private Moto moto;
+    private Propietario propietario;
+
+    @BeforeEach
+    void setUp() {
+        propietario = new Propietario("John Doe");
+        moto = new Moto("XYZ123", 2022, propietario, 120, TipoMoto.MOTO_HIBRIDA);
     }
 
     @Test
-    public void datosNulos(){
-        LOG.info("Iniciando test datosNulos");
-        assertThrows(Throwable.class, () -> new Moto(null, (int) 0, null, (int) 0));
-        LOG.info("Finalizando test datosNulos");
+    void testConstructor() {
+        assertEquals("XYZ123", moto.getPlaca());
+        assertEquals(2022, moto.getModelo());
+        assertEquals(propietario, moto.getPropietario());
+        assertEquals(120, moto.getVelocidadMaxima());
+        assertEquals(TipoMoto.MOTO_HIBRIDA, moto.getTipoMoto());
     }
 
     @Test
-    public void datosVacios(){
-        LOG.info("Iniciando test datosVacíos");
-        var propietario = new Propietario("Veronica Martinez");
-        assertThrows(Throwable.class, () -> new Moto(" ", (int) 0, propietario, (int) 0));
-        LOG.info("Finalizando test datosVacíos");
+    void testSetVelocidadMaxima() {
+        moto.setVelocidadMaxima(130);
+        assertEquals(130, moto.getVelocidadMaxima());
     }
 
     @Test
-    public void numeroNegativo(){
-        LOG.info("Iniciando test númeroNegativo");
-        var propietario = new Propietario("Veronica Martinez");
-        assertThrows(Throwable.class, () -> new Moto("TTA-98F", (int) -2023, propietario, (int) -130));
-        TesteadorDeNumeroNegativo testeador = new TesteadorDeNumeroNegativo();
-        assertThrows(Throwable.class, testeador);
-        LOG.info("Finalizando test númeroNegativo");
+    void testSetTipoMoto() {
+        moto.setTipoMoto(TipoMoto.MOTO_CLASICA);
+        assertEquals(TipoMoto.MOTO_CLASICA, moto.getTipoMoto());
     }
 
-    private static class TesteadorDeNumeroNegativo implements Executable{
-        @Override
-        public void execute () throws Throwable {
-            var propietario = new Propietario("Veronica Martinez");
-            new Moto("TTA-98F", (int) -2023, propietario, (int) -130);
-        }
+    @Test
+    void testCalcularTarifa() {
+        moto.setHorasEstacionadas(5);
+        moto.setTarifaPorHora(7.0); // Ensuring tarifaPorHora is set correctly
+        assertEquals(35.0, moto.calcularTarifa(), 0.01);
     }
-    
+
+    @Test
+    void testGetTarifaPorHora() {
+        assertEquals(7.0, moto.getTarifaPorHora()); // velocidadMaxima is 120
+        moto.setVelocidadMaxima(90);
+        assertEquals(5.0, moto.getTarifaPorHora());
+        moto.setVelocidadMaxima(160);
+        assertEquals(10.0, moto.getTarifaPorHora());
+    }
+
+    @Test
+    void testValidarPlaca() {
+        assertThrows(AssertionError.class, () -> new Moto(null, 2022, propietario, 120, TipoMoto.MOTO_HIBRIDA));
+        assertThrows(AssertionError.class, () -> new Moto("", 2022, propietario, 120, TipoMoto.MOTO_HIBRIDA));
+    }
+
+    @Test
+    void testValidarModelo() {
+        assertThrows(AssertionError.class, () -> new Moto("XYZ123", -1, propietario, 120, TipoMoto.MOTO_HIBRIDA));
+    }
+
+    @Test
+    void testValidarPropietario() {
+        assertThrows(AssertionError.class, () -> new Moto("XYZ123", 2022, null, 120, TipoMoto.MOTO_HIBRIDA));
+    }
+
+    @Test
+    void testValidarVelocidadMaxima() {
+        assertThrows(AssertionError.class, () -> new Moto("XYZ123", 2022, propietario, -10, TipoMoto.MOTO_HIBRIDA));
+    }
 }

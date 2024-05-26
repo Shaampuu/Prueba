@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -39,6 +38,9 @@ public class Parqueadero {
     }
 
     public boolean verificarDisponibilidad(int posicionI, int posicionJ) {
+        if (posicionI < 0 || posicionI >= puestos.length || posicionJ < 0 || posicionJ >= puestos[0].length) {
+            throw new ArrayIndexOutOfBoundsException("Índice fuera de los límites del arreglo.");
+        }
         return !puestos[posicionI][posicionJ].estaOcupado();
     }
 
@@ -48,6 +50,7 @@ public class Parqueadero {
             puestos[posicionI][posicionJ].ocuparPuesto(vehiculo);
             Registro registro = new Registro(vehiculo, fechaEntrada, null); // Pasar fecha de entrada
             historialRegistros.add(registro);
+            vehiculo.setRegistro(registro); // Asociar el registro con el vehículo
         } else {
             System.out.println("El puesto ya está ocupado.");
         }
@@ -67,11 +70,14 @@ public class Parqueadero {
     }
 
     public void liberarPuesto(int posicionI, int posicionJ) {
+        if (posicionI < 0 || posicionI >= puestos.length || posicionJ < 0 || posicionJ >= puestos[0].length) {
+            throw new ArrayIndexOutOfBoundsException("Índice fuera de los límites del arreglo.");
+        }
         Puesto puesto = puestos[posicionI][posicionJ];
         if (puesto.estaOcupado()) {
             Vehiculo vehiculo = puesto.getVehiculo();
             LocalDateTime fechaSalida = LocalDateTime.now();
-    
+
             // Buscar el registro correspondiente en el historial de registros
             Registro registro = null;
             for (Registro reg : historialRegistros) {
@@ -80,7 +86,7 @@ public class Parqueadero {
                     break;
                 }
             }
-    
+
             if (registro != null) {
                 registro.setFechaSalida(fechaSalida);
                 puesto.liberarPuesto();
@@ -89,9 +95,11 @@ public class Parqueadero {
             }
         }
     }
-    
-    
+
     public String obtenerPropietario(int posicionI, int posicionJ) {
+        if (posicionI < 0 || posicionI >= puestos.length || posicionJ < 0 || posicionJ >= puestos[0].length) {
+            return "Índice fuera de los límites del arreglo.";
+        }
         if (puestos[posicionI][posicionJ].estaOcupado()) {
             return puestos[posicionI][posicionJ].getVehiculo().getPropietario().getNombre();
         } else {
@@ -131,11 +139,11 @@ public class Parqueadero {
         }
         return null;
     }
-    
+
     public Collection<Carro> getCarros() {
         return Collections.unmodifiableCollection(carros);
     }
-    
+
     private boolean validarPlacaMotoExiste(String placa) {
         for (Moto moto : motos) {
             if (moto.getPlaca().equals(placa)) {
@@ -144,7 +152,7 @@ public class Parqueadero {
         }
         return false;
     }
-    
+
     private boolean validarPlacaCarroExiste(String placa) {
         for (Carro carro : carros) {
             if (carro.getPlaca().equals(placa)) {
@@ -153,13 +161,18 @@ public class Parqueadero {
         }
         return false;
     }
-    
+
     public ArrayList<Registro> getHistorialRegistros() {
         return historialRegistros;
     }
+
+    public Puesto[][] getPuestos() {
+        return puestos;
+    }
+
     public Map<TipoVehiculo, Double> generarReporteDiario(LocalDate fecha) {
         Map<TipoVehiculo, Double> reporteDiario = inicializarReporte();
-    
+
         for (Registro registro : historialRegistros) {
             if (esFechaIgual(registro, fecha)) {
                 actualizarReporte(registro, reporteDiario);
@@ -167,10 +180,10 @@ public class Parqueadero {
         }
         return reporteDiario;
     }
-    
+
     public Map<TipoVehiculo, Double> generarReporteMensual(int mes, int año) {
         Map<TipoVehiculo, Double> reporteMensual = inicializarReporte();
-    
+
         for (Registro registro : historialRegistros) {
             if (esMesYAñoIguales(registro, mes, año)) {
                 actualizarReporte(registro, reporteMensual);
@@ -178,7 +191,7 @@ public class Parqueadero {
         }
         return reporteMensual;
     }
-    
+
     private Map<TipoVehiculo, Double> inicializarReporte() {
         Map<TipoVehiculo, Double> reporte = new HashMap<>();
         for (TipoCarro tipoCarro : TipoCarro.values()) {
@@ -189,20 +202,20 @@ public class Parqueadero {
         }
         return reporte;
     }
-    
+
     private boolean esFechaIgual(Registro registro, LocalDate fecha) {
         return registro.getFechaEntrada().toLocalDate().equals(fecha);
     }
-    
+
     private boolean esMesYAñoIguales(Registro registro, int mes, int año) {
         LocalDate fechaEntrada = registro.getFechaEntrada().toLocalDate();
         return fechaEntrada.getMonthValue() == mes && fechaEntrada.getYear() == año;
     }
-    
+
     private void actualizarReporte(Registro registro, Map<TipoVehiculo, Double> reporte) {
         double costo = registro.calcularCosto();
         Vehiculo vehiculo = registro.getVehiculo();
-    
+
         if (vehiculo instanceof Moto) {
             reporte.compute(TipoVehiculo.MOTO, (tipo, acumulado) -> (acumulado == null) ? costo : acumulado + costo);
         } else if (vehiculo instanceof Carro) {
@@ -216,7 +229,4 @@ public class Parqueadero {
             System.err.println("Tipo de vehículo desconocido: " + vehiculo.getClass().getSimpleName());
         }
     }
-    
-        
-              
 }

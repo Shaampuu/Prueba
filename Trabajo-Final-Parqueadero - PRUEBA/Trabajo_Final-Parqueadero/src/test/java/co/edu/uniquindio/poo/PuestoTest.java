@@ -1,55 +1,69 @@
 package co.edu.uniquindio.poo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class PuestoTest {
+class PuestoTest {
 
-    @Test
-    public void testConstructor() {
-        Propietario propietario = new Propietario("Juan");
-        Carro carro = new Carro(TipoCarro.CAMIONETA, "ABC123", 2020, propietario);
-        Puesto puesto = new Puesto(0, 0, carro, 5, 5);
-        assertEquals(0, puesto.getPosicionI());
-        assertEquals(0, puesto.getPosicionJ());
-        assertEquals(carro, puesto.getVehiculo());
+    private Puesto puesto;
+    private Vehiculo vehiculo;
+    private Propietario propietario;
+
+    @BeforeEach
+    void setUp() {
+        propietario = new Propietario("John Doe");
+        vehiculo = new Carro(TipoCarro.CARRO, "ABC123", 2021, propietario);
+        puesto = new Puesto(1, 1, vehiculo, 3, 3); // 3x3 grid, valid position
     }
 
     @Test
-    public void testEstaOcupado() {
-        Puesto puestoVacio = new Puesto(0, 0, null, 5, 5);
-        assertFalse(puestoVacio.estaOcupado());
-
-        Propietario propietario = new Propietario("Juan");
-        Carro carro = new Carro(TipoCarro.CAMIONETA, "ABC123", 2020, propietario);
-        Puesto puestoOcupado = new Puesto(0, 0, carro, 5, 5);
-        assertTrue(puestoOcupado.estaOcupado());
+    void testConstructor() {
+        assertEquals(1, puesto.getPosicionI());
+        assertEquals(1, puesto.getPosicionJ());
+        assertEquals(vehiculo, puesto.getVehiculo());
     }
 
     @Test
-    public void testOcuparPuesto() {
-        Puesto puesto = new Puesto(0, 0, null, 5, 5);
-        assertFalse(puesto.estaOcupado());
+    void testSetPosicionI() {
+        puesto.setPosicionI(2);
+        assertEquals(2, puesto.getPosicionI());
+    }
 
-        Propietario propietario = new Propietario("Juan");
-        Carro carro = new Carro(TipoCarro.CAMIONETA, "ABC123", 2020, propietario);
-        puesto.ocuparPuesto(carro);
+    @Test
+    void testSetPosicionJ() {
+        puesto.setPosicionJ(2);
+        assertEquals(2, puesto.getPosicionJ());
+    }
+
+    @Test
+    void testEstaOcupado() {
         assertTrue(puesto.estaOcupado());
-        assertEquals(carro, puesto.getVehiculo());
-    }
-
-    @Test
-    public void testLiberarPuesto() {
-        Propietario propietario = new Propietario("Juan");
-        Carro carro = new Carro(TipoCarro.CAMIONETA, "ABC123", 2020, propietario);
-        Puesto puesto = new Puesto(0, 0, carro, 5, 5);
-        assertTrue(puesto.estaOcupado());
-
         puesto.liberarPuesto();
         assertFalse(puesto.estaOcupado());
-        assertEquals(null, puesto.getVehiculo());
+    }
+
+    @Test
+    void testOcuparPuesto() {
+        Vehiculo nuevoVehiculo = new Carro(TipoCarro.CAMIONETA, "DEF456", 2022, propietario);
+        puesto.ocuparPuesto(nuevoVehiculo);
+        assertEquals(nuevoVehiculo, puesto.getVehiculo());
+        assertTrue(puesto.estaOcupado());
+    }
+
+    @Test
+    void testLiberarPuesto() {
+        puesto.liberarPuesto();
+        assertNull(puesto.getVehiculo());
+        assertFalse(puesto.estaOcupado());
+    }
+
+    @Test
+    void testConstructorInvalidPosition() {
+        assertThrows(AssertionError.class, () -> new Puesto(-1, 1, vehiculo, 3, 3));
+        assertThrows(AssertionError.class, () -> new Puesto(1, -1, vehiculo, 3, 3));
+        assertThrows(AssertionError.class, () -> new Puesto(3, 1, vehiculo, 3, 3));
+        assertThrows(AssertionError.class, () -> new Puesto(1, 3, vehiculo, 3, 3));
     }
 }

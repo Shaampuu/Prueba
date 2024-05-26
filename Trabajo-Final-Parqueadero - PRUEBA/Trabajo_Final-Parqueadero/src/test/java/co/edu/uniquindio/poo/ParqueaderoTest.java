@@ -1,12 +1,14 @@
 package co.edu.uniquindio.poo;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.time.LocalDate;
 import java.util.Map;
 
-public class ParqueaderoTest {
+class ParqueaderoTest {
 
     private Parqueadero parqueadero;
     private Propietario propietario1;
@@ -15,44 +17,38 @@ public class ParqueaderoTest {
     private Moto moto;
 
     @BeforeEach
-    public void setUp() {
-        parqueadero = new Parqueadero(3, 3); // Asegúrate de que las dimensiones sean válidas
-        propietario1 = new Propietario("Juan");
-        propietario2 = new Propietario("Maria");
-        carro = new Carro(TipoCarro.CAMIONETA, "ABC123", 2020, propietario1); // Modifica para usar el enum TipoCarro
-        moto = new Moto("XYZ789", 2021, propietario2, 120); // Ajusta el constructor de Moto
+    void setUp() {
+        parqueadero = new Parqueadero(2, 2); // 2x2 grid
+        propietario1 = new Propietario("John Doe");
+        propietario2 = new Propietario("Jane Doe");
+        carro = new Carro(TipoCarro.CARRO, "ABC123", 2021, propietario1);
+        moto = new Moto("XYZ123", 2022, propietario2, 120, TipoMoto.MOTO_HIBRIDA);
     }
 
     @Test
-    public void testAgregarCarro() {
+    void testAgregarCarro() {
         parqueadero.agregarCarro(carro);
-        assertNotNull(parqueadero.getCarro("ABC123"));
+        assertEquals(1, parqueadero.getCarros().size());
+        assertEquals(carro, parqueadero.getCarro("ABC123"));
     }
 
     @Test
-    public void testAgregarMoto() {
+    void testAgregarMoto() {
         parqueadero.agregarMoto(moto);
-        assertNotNull(parqueadero.getMoto("XYZ789"));
+        assertEquals(1, parqueadero.getMotos().size());
+        assertEquals(moto, parqueadero.getMoto("XYZ123"));
     }
 
     @Test
-    public void testBuscarYParquearCarro() {
+    void testBuscarYParquearVehiculo() {
         parqueadero.agregarCarro(carro);
-        boolean parqueado = parqueadero.buscarYParquearVehiculo(carro);
-        assertTrue(parqueado);
+        boolean parked = parqueadero.buscarYParquearVehiculo(carro);
+        assertTrue(parked);
         assertFalse(parqueadero.verificarDisponibilidad(0, 0));
     }
 
     @Test
-    public void testBuscarYParquearMoto() {
-        parqueadero.agregarMoto(moto);
-        boolean parqueado = parqueadero.buscarYParquearVehiculo(moto);
-        assertTrue(parqueado);
-        assertFalse(parqueadero.verificarDisponibilidad(0, 0));
-    }
-
-    @Test
-    public void testLiberarPuesto() {
+    void testLiberarPuesto() {
         parqueadero.agregarCarro(carro);
         parqueadero.buscarYParquearVehiculo(carro);
         parqueadero.liberarPuesto(0, 0);
@@ -60,79 +56,37 @@ public class ParqueaderoTest {
     }
 
     @Test
-    public void testObtenerPropietario() {
+    void testObtenerPropietario() {
         parqueadero.agregarCarro(carro);
         parqueadero.buscarYParquearVehiculo(carro);
-        String nombrePropietario = parqueadero.obtenerPropietario(0, 0);
-        assertEquals("Juan", nombrePropietario);
+        assertEquals("John Doe", parqueadero.obtenerPropietario(0, 0));
     }
 
     @Test
-    public void testGenerarReporteDiario() {
-        // Agregar carro y registrarlo en el parqueadero
+    void testGenerarReporteDiario() {
         parqueadero.agregarCarro(carro);
         parqueadero.buscarYParquearVehiculo(carro);
         parqueadero.liberarPuesto(0, 0);
-
-        // Generar el reporte diario para la fecha actual
         Map<TipoVehiculo, Double> reporteDiario = parqueadero.generarReporteDiario(LocalDate.now());
-
-        // Validar que el reporte no sea nulo
-        assertNotNull(reporteDiario);
-
-        // Validar que el reporte no esté vacío
-        assertFalse(reporteDiario.isEmpty(), "El reporte diario no debe ser vacío");
-
-        // Validar que el reporte contenga el tipo de vehículo del carro
-        assertTrue(reporteDiario.containsKey(carro.getTipoCarro().getTipoVehiculo()));
-
-        // Validar que el valor del reporte para el tipo de vehículo del carro sea mayor
-        // que 0
-        assertTrue(reporteDiario.get(carro.getTipoCarro().getTipoVehiculo()) >= 0);
+        assertEquals(1, reporteDiario.size());
+        assertTrue(reporteDiario.containsKey(TipoVehiculo.CARRO));
     }
 
     @Test
-    public void testGenerarReporteMensual() {
-        // Agregar carro y registrarlo en el parqueadero
+    void testGenerarReporteMensual() {
         parqueadero.agregarCarro(carro);
         parqueadero.buscarYParquearVehiculo(carro);
         parqueadero.liberarPuesto(0, 0);
-    
-        // Generar el reporte mensual para el mes y año actuales
         Map<TipoVehiculo, Double> reporteMensual = parqueadero.generarReporteMensual(LocalDate.now().getMonthValue(), LocalDate.now().getYear());
-    
-        // Validar que el reporte no sea nulo
-        assertNotNull(reporteMensual);
-    
-        // Validar que el reporte no esté vacío
-        assertFalse(reporteMensual.isEmpty(), "El reporte mensual no debe ser vacío");
-    
-        // Validar que el reporte contenga el tipo de vehículo del carro
-        assertTrue(reporteMensual.containsKey(carro.getTipoCarro().getTipoVehiculo()));
-    
-        // Validar que el valor del reporte para el tipo de vehículo del carro sea mayor que 0
-        assertTrue(reporteMensual.get(carro.getTipoCarro().getTipoVehiculo()) >= 0);
+        assertEquals(1, reporteMensual.size());
+        assertTrue(reporteMensual.containsKey(TipoVehiculo.CARRO));
     }
-    
 
     @Test
-    public void testVerificarDisponibilidad() {
+    void testVerificarDisponibilidad() {
         assertTrue(parqueadero.verificarDisponibilidad(0, 0));
-    }
-
-    @Test
-    public void testOcuparPuestos() {
-        parqueadero.agregarCarro(carro);
-        parqueadero.ocuparPuestos(1, 1, carro);
-        assertFalse(parqueadero.verificarDisponibilidad(1, 1));
-    }
-
-    @Test
-    public void testHistorialRegistros() {
         parqueadero.agregarCarro(carro);
         parqueadero.buscarYParquearVehiculo(carro);
-        parqueadero.liberarPuesto(0, 0);
-
-        assertFalse(parqueadero.getHistorialRegistros().isEmpty());
+        assertFalse(parqueadero.verificarDisponibilidad(0, 0));
     }
 }

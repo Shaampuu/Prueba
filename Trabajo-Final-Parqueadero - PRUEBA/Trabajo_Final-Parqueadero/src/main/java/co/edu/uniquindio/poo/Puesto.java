@@ -1,9 +1,11 @@
 package co.edu.uniquindio.poo;
 
+
 public class Puesto {
     private int posicionI;
     private int posicionJ;
     private Vehiculo vehiculo;
+
 
     public Puesto(int posicionI, int posicionJ, Vehiculo vehiculo, int columnas, int filas){
         assert posicionI >= 0 && posicionI < columnas : "PosiciónI debe estar dentro de los límites (0 a columnas-1)";
@@ -13,6 +15,7 @@ public class Puesto {
         this.posicionJ = posicionJ;
         this.vehiculo = vehiculo;
     }
+
 
     public int getPosicionI(){
         return posicionI;
@@ -30,13 +33,16 @@ public class Puesto {
         this.posicionJ = posicionJ;
     }
 
+
     public boolean estaOcupado(){
         return vehiculo != null;
     }
 
+
     public void ocuparPuesto(Vehiculo vehiculo){
         this.vehiculo = vehiculo;
     }
+
 
     public void liberarPuesto(){
         this.vehiculo = null;

@@ -1,41 +1,63 @@
 package co.edu.uniquindio.poo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class CarroTest {
+class CarroTest {
+
+    private Carro carro;
+    private Propietario propietario;
+
+    @BeforeEach
+    void setUp() {
+        propietario = new Propietario("John Doe");
+        carro = new Carro(TipoCarro.CAMIONETA, "ABC123", 2021, propietario);
+    }
 
     @Test
-    public void datosCompletos() {
-        Propietario propietario = new Propietario("Alexander Buitrago");
-        TipoCarro tipoCarro = TipoCarro.CAMIONETA; // Selecciona el tipo de carro adecuado
-        Carro carro = new Carro(tipoCarro, "KDM-645", 2013, propietario); // Cambia el orden de los argumentos
-        assertEquals("KDM-645", carro.getPlaca());
-        assertEquals(2013, carro.getModelo());
+    void testConstructor() {
+        assertEquals("ABC123", carro.getPlaca());
+        assertEquals(2021, carro.getModelo());
         assertEquals(propietario, carro.getPropietario());
-        assertEquals(tipoCarro, carro.getTipoCarro()); // Usa getTipoCarro() en lugar de getTipoVehiculo()
+        assertEquals(TipoCarro.CAMIONETA, carro.getTipoCarro());
     }
 
     @Test
-    public void datosNulos() {
-        Propietario propietario = new Propietario("Alexander Buitrago");
-        TipoCarro tipoCarro = TipoCarro.CAMIONETA; // Selecciona el tipo de carro adecuado
-        assertDoesNotThrow(() -> new Carro(tipoCarro, "KDM-645", 2013, propietario)); // Cambia el orden de los argumentos
+    void testSetTipoCarro() {
+        carro.setTipoCarro(TipoCarro.DEPORTIVO);
+        assertEquals(TipoCarro.DEPORTIVO, carro.getTipoCarro());
     }
 
     @Test
-    public void datosVacios() {
-        Propietario propietario = new Propietario("Alexander Buitrago");
-        TipoCarro tipoCarro = TipoCarro.CAMIONETA; // Selecciona el tipo de carro adecuado
-        assertDoesNotThrow(() -> new Carro(tipoCarro, "KDM-645", 2013, propietario)); // Cambia el orden de los argumentos
+    void testCalcularTarifa() {
+        carro.setHorasEstacionadas(5);
+        carro.setTarifaPorHora(15.0);
+        assertEquals(75.0, carro.calcularTarifa(), 0.01);
     }
 
     @Test
-    public void numeroNegativo() {
-        Propietario propietario = new Propietario("Alexander Buitrago");
-        TipoCarro tipoCarro = TipoCarro.CAMIONETA; // Selecciona el tipo de carro adecuado
-        assertDoesNotThrow(() -> new Carro(tipoCarro, "KDM-645", 2013, propietario)); // Cambia el orden de los argumentos
+    void testGetTarifaPorHora() {
+        assertEquals(15.0, carro.getTarifaPorHora());
+        carro.setTipoCarro(TipoCarro.DEPORTIVO);
+        assertEquals(20.0, carro.getTarifaPorHora());
+    }
+
+    @Test
+    void testValidarPlaca() {
+        assertThrows(AssertionError.class, () -> new Carro(TipoCarro.CAMIONETA, null, 2021, propietario));
+        assertThrows(AssertionError.class, () -> new Carro(TipoCarro.CAMIONETA, "", 2021, propietario));
+    }
+
+    @Test
+    void testValidarModelo() {
+        assertThrows(AssertionError.class, () -> new Carro(TipoCarro.CAMIONETA, "ABC123", -1, propietario));
+    }
+
+    @Test
+    void testValidarPropietario() {
+        assertThrows(AssertionError.class, () -> new Carro(TipoCarro.CAMIONETA, "ABC123", 2021, null));
     }
 }

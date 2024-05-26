@@ -1,14 +1,15 @@
 package co.edu.uniquindio.poo;
 
 public class Moto extends Vehiculo {
-    
+
     private int velocidadMaxima;
     private TipoMoto tipoMoto;
-    
-    public Moto(String placa, int modelo, Propietario propietario, int velocidadMaxima) {
+
+    public Moto(String placa, int modelo, Propietario propietario, int velocidadMaxima, TipoMoto tipoMoto) {
         super(placa, modelo, propietario);
         assert velocidadMaxima > 0 : "La velocidad máxima debe ser mayor a 0 (cero)";
         this.velocidadMaxima = velocidadMaxima;
+        this.tipoMoto = tipoMoto;
     }
 
     public int getVelocidadMaxima() {
@@ -17,6 +18,19 @@ public class Moto extends Vehiculo {
 
     public void setVelocidadMaxima(int velocidadMaxima) {
         this.velocidadMaxima = velocidadMaxima;
+    }
+
+    public TipoMoto getTipoMoto() {
+        return tipoMoto;
+    }
+
+    public void setTipoMoto(TipoMoto tipoMoto) {
+        this.tipoMoto = tipoMoto;
+    }
+
+    @Override
+    public double calcularTarifa() {
+        return getTarifaPorHora() * getHorasEstacionadas();
     }
 
     @Override
